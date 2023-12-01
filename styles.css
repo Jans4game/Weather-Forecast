@@ -23,7 +23,6 @@ html {
     height: 100%;
     width: 100%;
     font-family:'Times New Roman', Times, serif;
-    overflow: hidden;
 }
 
 html{
@@ -311,7 +310,6 @@ html{
 
     html{
         height: 1000px;
-        overflow: auto;
     }
 
     #forecasting{
