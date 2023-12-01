@@ -37,6 +37,10 @@ html{
     justify-content: space-between;
 }
 
+html{
+    height: 900px;
+}
+
 #caster{
     height: 100% ;
     display: flex;
@@ -308,10 +312,6 @@ html{
         font-size: 13px;
     }
 
-    html{
-        height: 1000px;
-    }
-
     #forecasting{
         flex-direction: column;
     }
@@ -335,3 +335,10 @@ html{
         width: 30px;
     }
 }
+
+@media (max-width: 900px) {
+    html{
+        height: 1000px;
+    }
+}
+
