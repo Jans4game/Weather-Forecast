@@ -10,7 +10,7 @@ const searchbox = document.querySelector('#searchbox');
 const weatherer = document.querySelector('#weather');
 const searchaligner = document.querySelector('#searchaligner');
 const datee = document.querySelector('#date');
-const timee = document.querySelector('#time');
+const describe = document.querySelector('#describe');
 const humidity = document.querySelector('#gethumidity');
 const chanceofrain = document.querySelector('#getcor');
 const windspeed = document.querySelector('#getwind');
@@ -30,41 +30,43 @@ searchform.addEventListener('submit', (e) => {
 htmler.style.visibility = 'hidden';
 
 async function forecaster() {
-    const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=9c9acbf9a01448b1b3b144526232111&q=${area}&days=8&aqi=yes&alerts=no`, {mode: "cors"})
+    const response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${area}/?key=RP9E6FKKGB2YDN8V2CYMF8BZF&unitGroup=uk`, {mode: "cors"})
     response.json().then(function(response) {
 
-        weatherer.innerText = `${response.current.condition.text}`;
+        console.log(response);
 
-        const truetimer = dayconverter(response.location.localtime);
+        weatherer.innerText = `${response.currentConditions.conditions}`;
+
+        const truetimer = dayconverter(response.days[0].datetime);
 
         datee.innerText = `${truetimer[0]}`;
+        
+        describe.innerText = `${response.days[0].description}`;
 
-        timee.innerText = `${truetimer[1]}`;
+        temper.innerText = `${response.currentConditions.temp} °C`;
 
-        temper.innerText = `${response.current.temp_c} °C`;
-
-        areadiv.innerText = `${response.location.name}, ${response.location.country}`;
+        areadiv.innerText = `${response.resolvedAddress}`;
 
         if(tempholder.lastChild.id == "iconer"){
             tempholder.removeChild(tempholder.lastElementChild);
             const iconer = document.createElement('img');
             iconer.setAttribute("id", "iconer"); 
-            iconer.src = `https:${response.current.condition.icon}`;
+            iconer.src = `img/icon/${response.currentConditions.icon}.png`;
             tempholder.appendChild(iconer);
         } else {
             const iconer = document.createElement('img');
             iconer.setAttribute("id", "iconer"); 
-            iconer.src = `https:${response.current.condition.icon}`;
+            iconer.src = `img/icon/${response.currentConditions.icon}.png`;
             tempholder.appendChild(iconer);
         }
         
-        humidity.innerText = `${response.current.humidity} %`;
+        humidity.innerText = `${response.currentConditions.humidity} %`;
 
-        chanceofrain.innerText = `${response.forecast.forecastday[0].day.daily_chance_of_rain} %`;
+        chanceofrain.innerText = `${response.currentConditions.cloudcover} %`;
 
-        windspeed.innerText = `${response.current.wind_kph} kph`;
+        windspeed.innerText = `${response.currentConditions.windspeed} kph`;
 
-        feelslike.innerText = `${response.current.feelslike_c} °C`;
+        feelslike.innerText = `${response.currentConditions.feelslike} °C`;
             
         while(forecasting.firstChild) {
             forecasting.removeChild(forecasting.lastChild);
@@ -77,18 +79,18 @@ async function forecaster() {
             const forecast1 = document.createElement('div');
             forecast1.setAttribute("id", `day${i}`);
             forecast1.setAttribute('class', "designfore");
-            const dayer = dayconverter(response.forecast.forecastday[i+1].date);
-            forecast1.innerText = `${dayer[3]}`;
+            const dayer = dayconverter(response.days[i+1].datetime);
+            forecast1.innerText = `${dayer[2]}`;
 
             const forecast2 = document.createElement('img');
             forecast2.setAttribute("id", `pic${i}`);
             forecast2.setAttribute("class", `picss`);
-            forecast2.src = `https:${response.forecast.forecastday[i+1].day.condition.icon}`;
+            forecast2.src = `img/icon/${response.days[i+1].icon}.png`;
 
             const forecast3 = document.createElement('div');
             forecast3.setAttribute(`id`, `temperature${i}`);
             forecast3.setAttribute('class', "designtemp");
-            forecast3.innerText = `${response.forecast.forecastday[i+1].day.avgtemp_c} °C`;
+            forecast3.innerText = `${response.days[i+1].temp} °C`;
             
             task.appendChild(forecast1);
             task.appendChild(forecast3);
@@ -99,30 +101,29 @@ async function forecaster() {
             
     htmler.style.visibility = 'visible';
 
-    console.log(response);
     });
 }
 
 async function celsiusconverter() {
-    const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=9c9acbf9a01448b1b3b144526232111&q=${area}&days=8&aqi=yes&alerts=no`, {mode: "cors"})
+    const response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${area}/?key=RP9E6FKKGB2YDN8V2CYMF8BZF&unitGroup=uk`, {mode: "cors"})
     response.json().then(function(response) {
-        temper.innerText = `${response.current.temp_c} °C`;
-        feelslike.innerText = `${response.current.feelslike_c} °C`;
+        temper.innerText = `${response.currentConditions.temp} °C`;
+        feelslike.innerText = `${response.currentConditions.feelslike} °C`;
         for (let i=0;i<=6;i++){
             const con = document.querySelector(`#temperature${i}`);
-            con.innerText = `${response.forecast.forecastday[i+1].day.avgtemp_c} °C`;
+            con.innerText = `${response.days[i+1].temp} °C`;
         }
     });
 }
 
 async function farenheitcoverter() {
-    const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=9c9acbf9a01448b1b3b144526232111&q=${area}&days=8&aqi=yes&alerts=no`, {mode: "cors"})
+    const response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${area}/?key=RP9E6FKKGB2YDN8V2CYMF8BZF&unitGroup=us`, {mode: "cors"})
     response.json().then(function(response) {
-        temper.innerText = `${response.current.temp_f} °F`;
-        feelslike.innerText = `${response.current.feelslike_f} °F`;
+        temper.innerText = `${response.currentConditions.temp} °F`;
+        feelslike.innerText = `${response.currentConditions.feelslike} °F`;
         for (let i=0;i<=6;i++){
             const con = document.querySelector(`#temperature${i}`);
-            con.innerText = `${response.forecast.forecastday[i].day.avgtemp_f} °F`;
+            con.innerText = `${response.days[i].temp} °F`;
         }
     });
 }
@@ -179,17 +180,6 @@ function dayconverter(passdate) {
         realday = "Saturday";
     }
 
-    if (timechanged > 12) {
-        meridian = "pm";
-        hour = timechanged % 12;
-    } else if(timechanged == 0){
-        hour = 12;
-        meridian = "am";
-    } else {
-        hour = timechanged;
-        meridian = "am";
-    }
-
     switch (monthchanged) {
         case "1":
             month = "Jan";
@@ -232,7 +222,11 @@ function dayconverter(passdate) {
     }
 
     wholetimer = `${realday}, ${dates}th ${month} ${year}`;
-    let time = `${hour}:${minutes} ${meridian}`;
 
-    return [wholetimer, time, date, realday];
+    console.log(hour);
+    console.log(minutes);
+    console.log(meridian);
+
+
+    return [wholetimer, date, realday];
 }
